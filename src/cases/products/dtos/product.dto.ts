@@ -13,4 +13,5 @@ export interface ProductDTO {
   active: boolean;
   category: CategoryDTO;
   brand?: BrandDTO;
+  imageUrl?: string;
 }

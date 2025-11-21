@@ -9,19 +9,30 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   return (
-    <Card className="max-w-sm w-full hover:shadow-lg transition-shadow duration-300">
-      <CardHeader>
-        <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
+    <Card className="max-w-[200px] w-full hover:shadow-lg transition-shadow duration-300 p-3">
+      {product.imageUrl && (
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-28 h-28 object-cover rounded-md mx-auto"
+        />
+      )}
+
+      <CardHeader className="p-0 mt-2">
+        <h3 className="text-sm font-semibold text-gray-800 text-center">
+          {product.name}
+        </h3>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3">
+
+      <CardContent className="flex flex-col gap-2 p-0 mt-1 text-center">
         {product.description && (
-          <p className="text-gray-500 text-sm line-clamp-3">
+          <p className="text-gray-500 text-xs line-clamp-3">
             {product.description}
           </p>
         )}
 
-        <div className="flex flex-col gap-1 mt-2">
-          <p className="text-lg font-bold text-blue-700">
+        <div className="flex flex-col gap-1 mt-1">
+          <p className="text-sm font-bold text-blue-700">
             <IntlProvider locale="pt-BR">
               <FormattedNumber
                 value={product.price * 1.15}
@@ -31,7 +42,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             </IntlProvider>{" "}
             (cartão)
           </p>
-          <p className="text-sm font-medium text-green-600">
+          <p className="text-xs font-medium text-green-600">
             ou{" "}
             <IntlProvider locale="pt-BR">
               <FormattedNumber
@@ -46,9 +57,9 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         <button
           onClick={() => onAddToCart(product)}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="mt-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
         >
-          Adicionar ao carrinho
+          Comprar
         </button>
       </CardContent>
     </Card>
