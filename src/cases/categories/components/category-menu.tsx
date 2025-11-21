@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCategories } from "../hooks/use-category";
 import {
@@ -10,7 +11,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ShoppingCart } from "lucide-react";
+import { ChevronDown, ShoppingCart, User } from "lucide-react";
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
 
 type CategoryMenuProps = {
@@ -33,52 +34,20 @@ export function CategoryMenu({
 }: CategoryMenuProps) {
   const { data: categories } = useCategories();
   const [showCart, setShowCart] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="w-full py-4 flex items-center justify-between gap-4">
-      <div className="flex flex-col">
-        <h5 className="font-medium text-2xl text-blue-800">Nossos Produtos</h5>
-        <p className="text-sm text-blue-400">Novos Produtos todos os dias</p>
+      <div className="flex flex-col pl-6">
+        <h5 className="text-3xl font-bold text-blue-900 mb-1 drop-shadow-sm">
+          Catálogo Esportivo
+        </h5>
+        <p className="text-base text-blue-500">
+          Camisas de times e seleções de todo o mundo
+        </p>
       </div>
 
       <div className="flex items-center gap-2">
-        <input
-          type="text"
-          placeholder="Buscar produto..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="border px-3 py-2 rounded-md"
-        />
-
-        <Button variant="outline" onClick={() => onSelectCategory("all")}>
-          Todos
-        </Button>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              Categorias
-              <ChevronDown className="ml-2" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuRadioGroup
-              value={selectedCategory}
-              onValueChange={onSelectCategory}
-            >
-              {categories?.map((category) => (
-                <DropdownMenuRadioItem
-                  key={category.id}
-                  value={String(category.id)}
-                >
-                  {category.name}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
         <div className="relative">
           <Button
             variant="outline"
@@ -118,6 +87,51 @@ export function CategoryMenu({
             </div>
           )}
         </div>
+
+        <input
+          type="text"
+          placeholder="Buscar produto..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="border px-3 py-2 rounded-md flex-1 min-w-[400px]"
+        />
+
+        <Button variant="outline" onClick={() => onSelectCategory("all")}>
+          Todos
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              Categorias
+              <ChevronDown className="ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuRadioGroup
+              value={selectedCategory}
+              onValueChange={onSelectCategory}
+            >
+              {categories?.map((category) => (
+                <DropdownMenuRadioItem
+                  key={category.id}
+                  value={String(category.id)}
+                >
+                  {category.name}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Button
+          variant="outline"
+          onClick={() => navigate("/profile")}
+          className="p-2 rounded-full border"
+        >
+          <User />
+        </Button>
       </div>
     </nav>
   );
