@@ -11,8 +11,10 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ShoppingCart, User } from "lucide-react";
+import { ChevronDown, ShoppingCart, User, Trash } from "lucide-react";
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
+import { useCreateOrder } from "@/cases/orders/hooks/use-order";
+import { useCreateOrderItem } from "@/cases/orders/hooks/use-order-item";
 
 type CategoryMenuProps = {
   selectedCategory: string;
@@ -35,6 +37,46 @@ export function CategoryMenu({
   const { data: categories } = useCategories();
   const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate();
+
+  const createOrder = useCreateOrder();
+  const createOrderItem = useCreateOrderItem();
+
+  async function handleCheckout() {
+    const userData = localStorage.getItem("user");
+    const userId = userData ? JSON.parse(userData).id : null;
+
+    if (!userId) {
+      alert("Você precisa estar logado!");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const total = cart.reduce((sum, p) => sum + Number(p.price), 0);
+
+      const orderResult = await createOrder.mutateAsync({
+        customer: userId,
+        status: "NEW",
+        total,
+        shipping: 0,
+      });
+
+      for (const product of cart) {
+        await createOrderItem.mutateAsync({
+          product: product.id!,
+          order: orderResult.id!,
+          quantity: 1,
+          value: Number(product.price),
+        });
+      }
+
+      alert("Pedido finalizado com sucesso!");
+      navigate("/profile");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao finalizar pedido.");
+    }
+  }
 
   return (
     <nav className="w-full py-4 flex items-center justify-between gap-4">
@@ -63,26 +105,51 @@ export function CategoryMenu({
           </Button>
 
           {showCart && (
-            <div className="absolute right-0 mt-2 w-64 bg-white border shadow-md p-4 z-50">
+            <div className="absolute right-0 mt-2 w-72 bg-white border shadow-lg p-4 z-50 rounded-md">
               {cart.length === 0 ? (
                 <p className="text-gray-500">Carrinho vazio</p>
               ) : (
-                <ul className="flex flex-col gap-2">
-                  {cart.map((product) => (
-                    <li
-                      key={product.id}
-                      className="flex justify-between items-center"
-                    >
-                      <span>{product.name}</span>
-                      <button
-                        onClick={() => onRemoveFromCart(product.id!)}
-                        className="text-red-500 text-sm"
+                <>
+                  <ul className="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1">
+                    {cart.map((product) => (
+                      <li
+                        key={product.id}
+                        className="flex justify-between items-center"
                       >
-                        Remover
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{product.name}</span>
+                          <span className="text-sm text-gray-600">
+                            R$ {Number(product.price).toFixed(2)}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => onRemoveFromCart(product.id!)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash size={18} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-3 border-t pt-3 flex justify-between font-semibold">
+                    <span>Total:</span>
+                    <span>
+                      R${" "}
+                      {cart
+                        .reduce((sum, p) => sum + Number(p.price), 0)
+                        .toFixed(2)}
+                    </span>
+                  </div>
+
+                  <Button
+                    className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700"
+                    onClick={handleCheckout}
+                  >
+                    Finalizar Pedido
+                  </Button>
+                </>
               )}
             </div>
           )}
