@@ -33,6 +33,11 @@ export function ProductListPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  const handleClearCart = () => {
+    setCart([]);
+    localStorage.setItem("cart", JSON.stringify([]));
+  };
+
   return (
     <>
       <CategoryMenu
@@ -43,6 +48,7 @@ export function ProductListPage() {
         cart={cart}
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveFromCart}
+        onClearCart={handleClearCart} // <-- ADICIONADO
       />
 
       <section className="flex flex-col mt-8">

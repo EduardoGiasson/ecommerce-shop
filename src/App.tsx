@@ -6,6 +6,7 @@ import { PublicRoute } from "./cases/auth/guards/public-route";
 import { ProtectedRoute } from "./cases/auth/guards/protected-route";
 import { useEffect } from "react";
 import { UserProfilePage } from "./pages/user-profile.page";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   useEffect(() => {
@@ -13,46 +14,49 @@ export default function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+    <>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
 
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        }
-      />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <RegisterPage />
+            </PublicRoute>
+          }
+        />
 
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <ProductListPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <ProductListPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <UserProfilePage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Catch-all: qualquer outra rota redireciona */}
-      <Route path="*" element={<Navigate to="/login" />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+
+      <ToastContainer />
+    </>
   );
 }

@@ -15,6 +15,8 @@ import { ChevronDown, ShoppingCart, User, Trash } from "lucide-react";
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
 import { useCreateOrder } from "@/cases/orders/hooks/use-order";
 import { useCreateOrderItem } from "@/cases/orders/hooks/use-order-item";
+import { useCurrentCustomer } from "@/cases/customers/hooks/use-customer";
+import { toast } from "react-toastify";
 
 type CategoryMenuProps = {
   selectedCategory: string;
@@ -24,6 +26,7 @@ type CategoryMenuProps = {
   cart: ProductDTO[];
   onAddToCart: (product: ProductDTO) => void;
   onRemoveFromCart: (productId: string) => void;
+  onClearCart: () => void;
 };
 
 export function CategoryMenu({
@@ -33,6 +36,7 @@ export function CategoryMenu({
   onSearchChange,
   cart,
   onRemoveFromCart,
+  onClearCart,
 }: CategoryMenuProps) {
   const { data: categories } = useCategories();
   const [showCart, setShowCart] = useState(false);
@@ -40,13 +44,14 @@ export function CategoryMenu({
 
   const createOrder = useCreateOrder();
   const createOrderItem = useCreateOrderItem();
+  const { customer } = useCurrentCustomer();
 
   async function handleCheckout() {
     const userData = localStorage.getItem("user");
     const userId = userData ? JSON.parse(userData).id : null;
 
     if (!userId) {
-      alert("Você precisa estar logado!");
+      toast.error("Você precisa estar logado!");
       navigate("/login");
       return;
     }
@@ -55,7 +60,7 @@ export function CategoryMenu({
       const total = cart.reduce((sum, p) => sum + Number(p.price), 0);
 
       const orderResult = await createOrder.mutateAsync({
-        customer: userId,
+        customer: customer!.id!,
         status: "NEW",
         total,
         shipping: 0,
@@ -70,11 +75,18 @@ export function CategoryMenu({
         });
       }
 
-      alert("Pedido finalizado com sucesso!");
-      navigate("/profile");
+      toast.success("Pedido finalizado com sucesso!");
+
+      // FECHA O CARRINHO
+      setShowCart(false);
+
+      // LIMPA O CARRINHO DE UMA VEZ
+      onClearCart();
+
+      navigate("/products");
     } catch (err) {
       console.error(err);
-      alert("Erro ao finalizar pedido.");
+      toast.error("Erro ao finalizar pedido.");
     }
   }
 

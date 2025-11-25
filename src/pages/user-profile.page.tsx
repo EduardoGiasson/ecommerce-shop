@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 import { api } from "@/lib/axios";
+import { OrderDataTable } from "@/cases/orders/components/data-table/order-data-table";
 
 export function UserProfilePage() {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ export function UserProfilePage() {
 
       try {
         const { data: customers } = await api.get("/customers");
-
         const customerFound = customers.find(
           (c: CustomerDTO) => c.userId === user.id
         );
@@ -78,6 +78,9 @@ export function UserProfilePage() {
           <p>{customer.city?.name || "Não informado"}</p>
         </div>
       </div>
+
+      <h3 className="text-2xl font-semibold mt-12 mb-4">Pedidos</h3>
+      <OrderDataTable />
 
       <button
         onClick={() => navigate("/products")}
