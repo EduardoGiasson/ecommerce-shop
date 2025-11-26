@@ -1,3 +1,1 @@
-##Trabalho Ecommerce-Shop
-#Eduardo Giasson Correa
-#6-Periodo Unimater
+Trabalho Ecommerce-Shop Eduardo Giasson Correa 6-Periodo Unimater
