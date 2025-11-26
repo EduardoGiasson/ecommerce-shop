@@ -48,7 +48,7 @@ export function ProductListPage() {
         cart={cart}
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveFromCart}
-        onClearCart={handleClearCart} // <-- ADICIONADO
+        onClearCart={handleClearCart}
       />
 
       <section className="flex flex-col mt-8">

@@ -54,7 +54,7 @@ export function UserProfilePage() {
   return (
     <div className="w-full px-10 py-10 relative min-h-screen">
       <h2 className="text-3xl font-bold mb-10">
-        Olá, <span className="text-blue-600">{customer.name}</span>!
+        Olá, <>{customer.name}</>!
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-lg">

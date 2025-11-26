@@ -80,7 +80,7 @@ export function CategoryMenu({
       // FECHA O CARRINHO
       setShowCart(false);
 
-      // LIMPA O CARRINHO DE UMA VEZ
+      // LIMPA O CARRINHO
       onClearCart();
 
       navigate("/products");
