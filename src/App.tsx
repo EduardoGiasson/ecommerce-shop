@@ -4,19 +4,18 @@ import RegisterPage from "./cases/auth/components/register";
 import { ProductListPage } from "./pages/product-list.page";
 import { PublicRoute } from "./cases/auth/guards/public-route";
 import { ProtectedRoute } from "./cases/auth/guards/protected-route";
-import { useEffect } from "react";
 import { UserProfilePage } from "./pages/user-profile.page";
 import { ToastContainer } from "react-toastify";
+import { HomePage } from "./cases/main/HomePage";
+import { CadastroCarrosPage } from "./pages/cadastro-carros";
+import { DashboardLayout } from "./layout/DashboardLayout";
 
 export default function App() {
-  useEffect(() => {
-    localStorage.removeItem("user");
-  }, []);
-
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Públicas */}
+        <Route path="/" element={<HomePage />} />
 
         <Route
           path="/login"
@@ -26,6 +25,7 @@ export default function App() {
             </PublicRoute>
           }
         />
+
         <Route
           path="/register"
           element={
@@ -36,24 +36,19 @@ export default function App() {
         />
 
         <Route
-          path="/products"
           element={
             <ProtectedRoute>
-              <ProductListPage />
+              <DashboardLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/products" element={<ProductListPage />} />
+          <Route path="/cars" element={<CadastroCarrosPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+        </Route>
 
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <UserProfilePage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="*" element={<Navigate to="/login" />} />
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
       <ToastContainer />

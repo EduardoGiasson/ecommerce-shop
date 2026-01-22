@@ -27,41 +27,31 @@ export function ProductListPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const handleRemoveFromCart = (productId: string) => {
-    const updatedCart = cart.filter((p) => p.id !== productId);
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
-
-  const handleClearCart = () => {
-    setCart([]);
-    localStorage.setItem("cart", JSON.stringify([]));
-  };
-
   return (
-    <>
-      <CategoryMenu
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        cart={cart}
-        onAddToCart={handleAddToCart}
-        onRemoveFromCart={handleRemoveFromCart}
-        onClearCart={handleClearCart}
-      />
+    <div className="flex min-h-screen">
+      {/* Conteúdo */}
+      <main className="flex-1 p-8">
+        <CategoryMenu
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          cart={cart}
+          onAddToCart={handleAddToCart}
+        />
 
-      <section className="flex flex-col mt-8">
-        <div className="flex gap-8 flex-wrap">
-          {filteredProducts?.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-      </section>
-    </>
+        <section className="flex flex-col mt-8">
+          <div className="flex gap-8 flex-wrap">
+            {filteredProducts?.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

@@ -6,10 +6,6 @@ import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardDescription,
-  CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   Select,
@@ -19,13 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import logo from "@/assets/images/logo.png";
+import { toast } from "react-toastify";
+
 import { useCities } from "@/cases/cities/hooks/use-city";
 import { useStates } from "@/cases/states/hooks/use-state";
+import { useCreateCustomer } from "@/cases/customers/hooks/use-customer";
+import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 
 import { supabase } from "@/lib/supabase-client";
-import type { CustomerDTO } from "@/cases/customers/dtos/customer";
-import { useCreateCustomer } from "@/cases/customers/hooks/use-customer";
-import { toast } from "react-toastify";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -41,6 +39,7 @@ export default function RegisterPage() {
     zipcode: "",
     stateId: "",
     cityId: "",
+    nivelConta: null as number | null, // 0 consumidor | 1 gestor
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,8 +57,14 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (formData.nivelConta === null) {
+      return toast.error("Selecione Consumidor ou Gestor.");
+    }
+
     const selectedCity = cities.find((c) => c.id === formData.cityId);
-    if (!selectedCity) return toast.error("Selecione uma cidade válida!");
+    if (!selectedCity) {
+      return toast.error("Selecione uma cidade válida.");
+    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -79,6 +84,7 @@ export default function RegisterPage() {
           address: formData.address,
           zipcode: cleanZip,
           city: selectedCity,
+          nivelConta: formData.nivelConta,
         } as CustomerDTO,
         {
           onSuccess: () => {
@@ -93,151 +99,142 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted">
-      <Card className="w-[400px] shadow-md">
-        <CardHeader>
-          <CardTitle className="text-center text-xl font-bold">
-            Crie sua conta
-          </CardTitle>
-          <CardDescription className="text-center text-sm text-muted-foreground">
-            Preencha os dados para continuar
-          </CardDescription>
-        </CardHeader>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-full max-w-[1800px] min-h-[900px] bg-[#d9f3f2] rounded-lg p-12 relative">
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Nome */}
-            <div className="grid gap-2">
-              <Label htmlFor="name">Nome</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
+        {/* Logo */}
+        <div className="absolute top-8 left-8 flex items-center gap-3">
+          <img src={logo} alt="Logo" className="w-12 h-12 object-contain" />
+          <span className="font-semibold text-gray-700 text-lg">
+            ENERGIZA
+          </span>
+        </div>
 
-            {/* Email */}
-            <div className="grid gap-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+        {/* Conteúdo */}
+        <div className="flex flex-col items-center justify-center mt-16">
+          <h1 className="text-4xl font-semibold mb-6">
+            Crie seu cadastro
+          </h1>
 
-            {/* Senha */}
-            <div className="grid gap-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Endereço */}
-            <div className="grid gap-2">
-              <Label htmlFor="address">Endereço</Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* CEP */}
-            <div className="grid gap-2">
-              <Label htmlFor="zipcode">CEP</Label>
-              <Input
-                id="zipcode"
-                name="zipcode"
-                value={formData.zipcode}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Estado */}
-            <div className="grid gap-2">
-              <Label htmlFor="stateId">Estado</Label>
-              <Select
-                value={formData.stateId}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    stateId: value,
-                    cityId: "",
-                  }))
+          {/* Tipo de conta */}
+          <div className="flex gap-6 mb-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="nivelConta"
+                checked={formData.nivelConta === 0}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, nivelConta: 0 }))
                 }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione um estado" />
-                </SelectTrigger>
+                required
+              />
+              <span className="text-sm">Consumidor</span>
+            </label>
 
-                <SelectContent>
-                  {states.map((s) => (
-                    <SelectItem key={s.id} value={String(s.id)}>
-                      {s.name} ({s.acronym})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="nivelConta"
+                checked={formData.nivelConta === 1}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, nivelConta: 1 }))
+                }
+                required
+              />
+              <span className="text-sm">Gestor</span>
+            </label>
+          </div>
 
-            {/* Cidade */}
-            <div className="grid gap-2">
-              <Label htmlFor="cityId">Cidade</Label>
-              <Select
-                value={formData.cityId}
-                onValueChange={handleSelectCity}
-                disabled={!formData.stateId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione uma cidade" />
-                </SelectTrigger>
+          <Card className="w-[420px] shadow-md">
+            <CardContent className="pt-6">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                <SelectContent>
-                  {filteredCities.length ? (
-                    filteredCities.map((city) => (
-                      <SelectItem key={city.id} value={String(city.id)}>
-                        {city.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="no-data" disabled>
-                      Nenhuma cidade disponível
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
+                <div>
+                  <Label>Nome Completo</Label>
+                  <Input name="name" value={formData.name} onChange={handleChange} required />
+                </div>
 
-            <CardFooter className="flex flex-col gap-3 mt-6">
-              <Button
-                type="submit"
-                disabled={createCustomer.isPending}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                {createCustomer.isPending ? "Cadastrando..." : "Cadastrar"}
-              </Button>
+                <div>
+                  <Label>Email</Label>
+                  <Input name="email" value={formData.email} onChange={handleChange} required />
+                </div>
 
-              <a href="/login" className="text-sm text-primary hover:underline">
-                Já possui conta? Faça login
-              </a>
-            </CardFooter>
-          </form>
-        </CardContent>
-      </Card>
+                <div>
+                  <Label>Senha</Label>
+                  <Input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                </div>
+
+                <div>
+                  <Label>Endereço</Label>
+                  <Input name="address" value={formData.address} onChange={handleChange} required />
+                </div>
+
+                <div>
+                  <Label>CEP</Label>
+                  <Input name="zipcode" value={formData.zipcode} onChange={handleChange} required />
+                </div>
+
+                <div>
+                  <Label>Estado</Label>
+                  <Select
+                    value={formData.stateId}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, stateId: value, cityId: "" }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {states.map((s) => (
+                        <SelectItem key={s.id} value={String(s.id)}>
+                          {s.name} ({s.acronym})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Cidade</Label>
+                  <Select
+                    value={formData.cityId}
+                    onValueChange={handleSelectCity}
+                    disabled={!formData.stateId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filteredCities.map((city) => (
+                        <SelectItem key={city.id} value={String(city.id)}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={createCustomer.isPending}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700"
+                >
+                  {createCustomer.isPending ? "Cadastrando..." : "Cadastrar"}
+                </Button>
+
+                <a
+                  href="/login"
+                  className="text-sm text-center text-blue-600 hover:underline"
+                >
+                  Já possui conta? Faça login
+                </a>
+
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

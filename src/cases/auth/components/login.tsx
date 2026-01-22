@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import logo from "@/assets/images/logo.png";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,23 +21,23 @@ export function LoginPage() {
       });
 
       if (error) throw error;
-
       if (!data.user) throw new Error("Usuário não encontrado.");
 
       if (!data.user.confirmed_at) {
         toast.warning("Confirme seu email antes de logar.");
-        setLoading(false);
         return;
       }
 
-      // Salva usuário no localStorage
       localStorage.setItem(
         "user",
-        JSON.stringify({ id: data.user.id, token: data.session?.access_token })
+        JSON.stringify({
+          id: data.user.id,
+          token: data.session?.access_token,
+        })
       );
 
       toast.success("Login realizado com sucesso!");
-      navigate("/products"); // redireciona para a página protegida
+      navigate("/products");
     } catch (err: any) {
       toast.error(err.message || "Erro ao realizar login.");
     } finally {
@@ -45,39 +46,55 @@ export function LoginPage() {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-20 p-6 border rounded shadow">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="w-full max-w-[1800px] min-h-[900px] bg-[#d9f3f2] rounded-lg p-12 relative">
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-2 mb-4 border rounded"
-      />
+      {/* Logo */}
+      <div className="absolute top-8 left-8 flex items-center gap-3">
+        <img
+          src={logo}
+          alt="Logo"
+          className="w-12 h-12 object-contain"
+        />
+        <span className="font-semibold text-gray-700 text-lg">
+          ENERGIZA
+        </span>
+      </div>
 
-      <input
-        type="password"
-        placeholder="Senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-2 mb-6 border rounded"
-      />
+      {/* Conteúdo */}
+      <div className="flex flex-col items-center justify-center mt-16">
+        <h1 className="text-4xl font-semibold text-black-600 mb-14">
+          LOGIN
+        </h1>
 
-      <button
-        onClick={handleLogin}
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-      >
-        {loading ? "Entrando..." : "Entrar"}
-      </button>
+        <div className="w-full max-w-lg">
+          <label className="text-sm text-black-600">Email*</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full h-12 px-4 mb-8 border rounded bg-white"
+          />
 
-      <p
-        className="text-center mt-4 text-blue-600 cursor-pointer"
-        onClick={() => navigate("/register")}
-      >
-        Criar conta
-      </p>
+          <label className="text-sm text-black-600">Senha*</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full h-12 px-4 mb-4 border rounded bg-white"
+          />
+          <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full h-13 mt-6 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition"
+        >
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
+
+        </div>
+      </div>
     </div>
-  );
+  </div>
+);
+
 }

@@ -7,4 +7,5 @@ export interface CustomerDTO {
   zipcode: string;
   city: CityDTO;
   userId: string;
+  nivelConta: number;
 }

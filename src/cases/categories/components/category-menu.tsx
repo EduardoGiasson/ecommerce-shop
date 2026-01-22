@@ -25,8 +25,6 @@ type CategoryMenuProps = {
   onSearchChange: (term: string) => void;
   cart: ProductDTO[];
   onAddToCart: (product: ProductDTO) => void;
-  onRemoveFromCart: (productId: string) => void;
-  onClearCart: () => void;
 };
 
 export function CategoryMenu({
@@ -35,8 +33,6 @@ export function CategoryMenu({
   searchTerm,
   onSearchChange,
   cart,
-  onRemoveFromCart,
-  onClearCart,
 }: CategoryMenuProps) {
   const { data: categories } = useCategories();
   const [showCart, setShowCart] = useState(false);
@@ -77,12 +73,6 @@ export function CategoryMenu({
 
       toast.success("Pedido finalizado com sucesso!");
 
-      // FECHA O CARRINHO
-      setShowCart(false);
-
-      // LIMPA O CARRINHO
-      onClearCart();
-
       navigate("/products");
     } catch (err) {
       console.error(err);
@@ -92,80 +82,8 @@ export function CategoryMenu({
 
   return (
     <nav className="w-full py-4 flex items-center justify-between gap-4">
-      <div className="flex flex-col pl-6">
-        <h5 className="text-3xl font-bold text-blue-900 mb-1 drop-shadow-sm">
-          Catálogo Esportivo
-        </h5>
-        <p className="text-base text-blue-500">
-          Camisas de times e seleções de todo o mundo
-        </p>
-      </div>
-
+      <div className="flex flex-col pl-6"/>
       <div className="flex items-center gap-2">
-        <div className="relative">
-          <Button
-            variant="outline"
-            onClick={() => setShowCart((prev) => !prev)}
-            className="flex items-center gap-1"
-          >
-            <ShoppingCart />
-            {cart.length > 0 && (
-              <span className="text-sm bg-red-500 text-white px-2 rounded-full">
-                {cart.length}
-              </span>
-            )}
-          </Button>
-
-          {showCart && (
-            <div className="absolute right-0 mt-2 w-72 bg-white border shadow-lg p-4 z-50 rounded-md">
-              {cart.length === 0 ? (
-                <p className="text-gray-500">Carrinho vazio</p>
-              ) : (
-                <>
-                  <ul className="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1">
-                    {cart.map((product) => (
-                      <li
-                        key={product.id}
-                        className="flex justify-between items-center"
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-medium">{product.name}</span>
-                          <span className="text-sm text-gray-600">
-                            R$ {Number(product.price).toFixed(2)}
-                          </span>
-                        </div>
-
-                        <button
-                          onClick={() => onRemoveFromCart(product.id!)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash size={18} />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-3 border-t pt-3 flex justify-between font-semibold">
-                    <span>Total:</span>
-                    <span>
-                      R${" "}
-                      {cart
-                        .reduce((sum, p) => sum + Number(p.price), 0)
-                        .toFixed(2)}
-                    </span>
-                  </div>
-
-                  <Button
-                    className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700"
-                    onClick={handleCheckout}
-                  >
-                    Finalizar Pedido
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
-        </div>
 
         <input
           type="text"
@@ -174,35 +92,6 @@ export function CategoryMenu({
           onChange={(e) => onSearchChange(e.target.value)}
           className="border px-3 py-2 rounded-md flex-1 min-w-[400px]"
         />
-
-        <Button variant="outline" onClick={() => onSelectCategory("all")}>
-          Todos
-        </Button>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              Categorias
-              <ChevronDown className="ml-2" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuRadioGroup
-              value={selectedCategory}
-              onValueChange={onSelectCategory}
-            >
-              {categories?.map((category) => (
-                <DropdownMenuRadioItem
-                  key={category.id}
-                  value={String(category.id)}
-                >
-                  {category.name}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         <Button
           variant="outline"
