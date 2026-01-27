@@ -1,7 +1,3 @@
 export function CadastroCarrosPage() {
-  return (
-    <div>
-      Cadastro de Carros
-    </div>
-  );
+  return <div>Cadastro de Carros</div>;
 }
