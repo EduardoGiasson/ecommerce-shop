@@ -7,8 +7,8 @@ import { ProtectedRoute } from "./cases/auth/guards/protected-route";
 import { UserProfilePage } from "./pages/user-profile.page";
 import { ToastContainer } from "react-toastify";
 import { HomePage } from "./cases/main/HomePage";
-import { CadastroCarrosPage } from "./pages/cadastro-carros";
 import { DashboardLayout } from "./layout/DashboardLayout";
+import { CadastroCarrosPage } from "./pages/car-listpage";
 
 export default function App() {
   return (

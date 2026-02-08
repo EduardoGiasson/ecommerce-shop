@@ -9,7 +9,6 @@ export interface CarDTO {
   id?: string;
   name: string;
   description?: string;
-  price: number;
   active: boolean;
   category: CategoryDTO;
   brand?: BrandDTO;
