@@ -1,25 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import { FiBox, FiTruck } from "react-icons/fi";
+import logo from "@/assets/images/logo.png";
 
 export function Sidebar() {
   const navigate = useNavigate();
 
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 text-white p-6">
-      <h2 className="text-xl font-bold mb-8">Painel</h2>
+    <aside className="w-64 min-h-screen bg-gray-900 text-white px-5 py-4 flex flex-col">
+      {/* Logo */}
+      <div className="flex items-center gap-2 mb-8">
+        <img src={logo} alt="Logo" className="w-10 h-10 object-contain" />
+        <span className="font-medium text-sm tracking-wide">ENERGIZA</span>
+      </div>
 
+      {/* Navegação */}
       <nav className="flex flex-col gap-2">
         <button
           onClick={() => navigate("/products")}
-          className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium"
+          className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium transition"
         >
           <FiBox size={18} />
-          Produtos
+          Inicial
         </button>
 
         <button
           onClick={() => navigate("/cars")}
-          className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium"
+          className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium transition"
         >
           <FiTruck size={18} />
           Carros

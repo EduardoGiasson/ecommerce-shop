@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Pencil } from "lucide-react";
 import type { CarDTO } from "../dtos/cars.dto";
 
 type CarCardProps = {
@@ -7,49 +8,54 @@ type CarCardProps = {
 };
 
 export function CarCard({ car, onEdit }: CarCardProps) {
-
   return (
-    <Card className="max-w-[220px] w-full hover:shadow-lg transition-shadow p-3">
+    <Card className="max-w-[220px] w-full hover:shadow-lg transition-all duration-200 p-3 flex flex-col items-center text-center">
       {car.imageUrl && (
         <img
           src={car.imageUrl}
           alt={car.name}
-          className="w-28 h-28 object-cover rounded-md mx-auto"
+          className="w-28 h-28 object-cover rounded-md"
         />
       )}
 
-      <CardHeader className="p-0 mt-2 text-center">
-        <h3 className="text-sm font-semibold text-gray-800">
-          {car.name}
-        </h3>
+      {/* Nome */}
+      <h3 className="text-sm font-semibold text-gray-800 mt-2 leading-tight">
+        {car.name}
+      </h3>
 
-        <span className="text-xs text-gray-500">
-          {car.brand?.name ?? "Marca não informada"}
-        </span>
-      </CardHeader>
+      {/* Descrição */}
+      {car.description && (
+        <p className="text-xs text-gray-500 mt-[2px] line-clamp-3">
+          {car.description}
+        </p>
+      )}
 
-      <CardContent className="flex flex-col gap-2 p-0 mt-2 text-center">
-        {car.description && (
-          <p className="text-xs text-gray-500 line-clamp-3">
-            {car.description}
-          </p>
-        )}
+      {/* Status */}
+      <span
+        className={`text-xs font-semibold mt-1 ${
+          car.active ? "text-green-600" : "text-red-600"
+        }`}
+      >
+        {car.active ? "Ativo" : "Inativo"}
+      </span>
 
-        <span
-          className={`text-xs font-semibold ${
-            car.active ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {car.active ? "Ativo" : "Inativo"}
-        </span>
-
-        <button
-          onClick={() => onEdit?.(car)}
-          className="mt-2 px-3 py-1 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 transition"
-        >
-          Editar
-        </button>
-      </CardContent>
+      {/* Botão */}
+      <button
+        disabled={!onEdit}
+        onClick={() => onEdit?.(car)}
+        className="
+          mt-2 flex items-center justify-center gap-2
+          px-3 py-1.5 text-sm rounded-md
+          bg-gray-800 text-white
+          hover:bg-gray-900
+          active:scale-95
+          transition
+          disabled:opacity-40 disabled:cursor-not-allowed
+        "
+      >
+        <Pencil size={14} />
+        Editar
+      </button>
     </Card>
   );
 }
