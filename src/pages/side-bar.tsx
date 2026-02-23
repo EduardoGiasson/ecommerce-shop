@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { FiBox, FiTruck } from "react-icons/fi";
+import { FiBox, FiTruck, FiZap } from "react-icons/fi";
 import logo from "@/assets/images/logo.png";
 
 export function Sidebar() {
@@ -30,6 +30,14 @@ export function Sidebar() {
           <FiTruck size={18} />
           Carros
         </button>
+            <button
+            onClick={() => navigate("/eletropostos")}
+            className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium transition"
+          >
+            <FiZap size={18} />
+            Eletropostos
+          </button>
+
       </nav>
     </aside>
   );

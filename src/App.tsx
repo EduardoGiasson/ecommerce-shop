@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { HomePage } from "./cases/main/HomePage";
 import { DashboardLayout } from "./layout/DashboardLayout";
 import { CadastroCarrosPage } from "./pages/car-listpage";
+import { CadastroEletroPostosPage } from "./pages/eletropostos-listpage";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
         >
           <Route path="/products" element={<ProductListPage />} />
           <Route path="/cars" element={<CadastroCarrosPage />} />
+          <Route path="/eletropostos" element={<CadastroEletroPostosPage/>} />
           <Route path="/profile" element={<UserProfilePage />} />
         </Route>
 
