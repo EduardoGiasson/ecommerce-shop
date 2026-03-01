@@ -25,23 +25,11 @@ export function EletropostoCard({ eletroposto, onEdit }: Props) {
         {eletroposto.name}
       </h3>
 
-      {/* Cliente */}
-      <span className="text-[11px] text-gray-400">
-        {eletroposto.customer?.name}
-      </span>
-
       {/* Descrição */}
       {eletroposto.description && (
         <p className="text-xs text-gray-500 mt-[2px] line-clamp-3">
           {eletroposto.description}
         </p>
-      )}
-
-      {/* Marca */}
-      {eletroposto.brand && (
-        <span className="text-[11px] text-gray-500 mt-1">
-          {eletroposto.brand}
-        </span>
       )}
 
       {/* Status */}

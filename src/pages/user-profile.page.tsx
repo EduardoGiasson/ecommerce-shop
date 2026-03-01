@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
+import { LogOut } from "lucide-react";
 import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 import { api } from "@/lib/axios";
 import { OrderDataTable } from "@/cases/orders/components/data-table/order-data-table";
@@ -8,26 +9,33 @@ import { OrderDataTable } from "@/cases/orders/components/data-table/order-data-
 export function UserProfilePage() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<CustomerDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  }, [navigate]);
 
   useEffect(() => {
     async function loadCustomer() {
-      const stored = localStorage.getItem("user");
-
-      if (!stored) {
-        navigate("/login");
-        return;
-      }
-
-      const user = JSON.parse(stored);
-
-      if (!user.id) {
-        toast.error("Usuário inválido.");
-        navigate("/login");
-        return;
-      }
-
       try {
+        const storedUser = localStorage.getItem("user");
+
+        if (!storedUser) {
+          handleLogout();
+          return;
+        }
+
+        const user = JSON.parse(storedUser);
+
+        if (!user?.id) {
+          toast.error("Usuário inválido.");
+          handleLogout();
+          return;
+        }
+
         const { data: customers } = await api.get("/customers");
+
         const customerFound = customers.find(
           (c: CustomerDTO) => c.userId === user.id
         );
@@ -38,56 +46,70 @@ export function UserProfilePage() {
         }
 
         setCustomer(customerFound);
-      } catch (err) {
+      } catch (error) {
         toast.error("Erro ao carregar perfil.");
-        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
 
     loadCustomer();
-  }, [navigate]);
+  }, [handleLogout]);
+
+  if (loading) {
+    return <p className="mt-20 text-center">Carregando...</p>;
+  }
 
   if (!customer) {
-    return <p className="text-center mt-20">Carregando...</p>;
+    return <p className="mt-20 text-center">Perfil não encontrado.</p>;
   }
 
   return (
-    <div className="w-full px-10 py-10 relative min-h-screen">
-      <h2 className="text-3xl font-bold mb-10">
-        Olá, <>{customer.name}</>!
-      </h2>
+    <div className="relative min-h-screen w-full px-10 py-10">
+      <div className="mb-10 flex items-center gap-4">
+        <h2 className="text-3xl font-bold">
+          Olá, {customer.name}!
+        </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-lg">
-        <div>
-          <p className="font-semibold text-sm text-gray-700">Nome</p>
-          <p>{customer.name}</p>
-        </div>
-
-        <div>
-          <p className="font-semibold text-sm text-gray-700">Endereço</p>
-          <p>{customer.address || "Não informado"}</p>
-        </div>
-
-        <div>
-          <p className="font-semibold text-sm text-gray-700">CEP</p>
-          <p>{customer.zipcode || "Não informado"}</p>
-        </div>
-
-        <div>
-          <p className="font-semibold text-sm text-gray-700">Cidade</p>
-          <p>{customer.city?.name || "Não informado"}</p>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-900"
+        >
+          <LogOut size={18} />
+          Sair
+        </button>
       </div>
 
-      <h3 className="text-2xl font-semibold mt-12 mb-4">Pedidos</h3>
+      <div className="grid grid-cols-1 gap-8 text-lg md:grid-cols-2 lg:grid-cols-4">
+        <InfoItem label="Nome" value={customer.name} />
+        <InfoItem label="Endereço" value={customer.address} />
+        <InfoItem label="CEP" value={customer.zipcode} />
+        <InfoItem label="Cidade" value={customer.city?.name} />
+      </div>
+
+      <h3 className="mt-12 mb-4 text-2xl font-semibold">Pedidos</h3>
       <OrderDataTable />
 
       <button
         onClick={() => navigate("/products")}
-        className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded shadow-lg"
+        className="fixed bottom-6 right-6 rounded bg-red-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-red-700"
       >
-        Cancelar
+        Voltar
       </button>
+    </div>
+  );
+}
+
+interface InfoItemProps {
+  label: string;
+  value?: string | null;
+}
+
+function InfoItem({ label, value }: InfoItemProps) {
+  return (
+    <div>
+      <p className="text-sm font-semibold text-gray-700">{label}</p>
+      <p>{value || "Não informado"}</p>
     </div>
   );
 }

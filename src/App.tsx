@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "./cases/auth/components/login";
 import RegisterPage from "./cases/auth/components/register";
-import { ProductListPage } from "./pages/product-list.page";
+import { InicialPage } from "./pages/product-list.page";
 import { PublicRoute } from "./cases/auth/guards/public-route";
 import { ProtectedRoute } from "./cases/auth/guards/protected-route";
 import { UserProfilePage } from "./pages/user-profile.page";
@@ -11,6 +11,7 @@ import { DashboardLayout } from "./layout/DashboardLayout";
 import { CadastroCarrosPage } from "./pages/car-listpage";
 import { CadastroEletroPostosPage } from "./pages/eletropostos-listpage";
 import "leaflet/dist/leaflet.css";
+import { AgendamentosPage } from "./pages/agendamentos-listpage";
 
 export default function App() {
   return (
@@ -44,10 +45,11 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/products" element={<ProductListPage />} />
+          <Route path="/products" element={<InicialPage />} />
           <Route path="/cars" element={<CadastroCarrosPage />} />
           <Route path="/eletropostos" element={<CadastroEletroPostosPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/agendamentos" element={<AgendamentosPage />} />
         </Route>
 
         {/* fallback */}

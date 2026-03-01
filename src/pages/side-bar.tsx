@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { FiBox, FiTruck, FiZap } from "react-icons/fi";
+import { FiBox, FiCalendar, FiTruck, FiZap } from "react-icons/fi";
 import logo from "@/assets/images/logo.png";
 
 export function Sidebar() {
@@ -37,6 +37,14 @@ export function Sidebar() {
             <FiZap size={18} />
             Eletropostos
           </button>
+
+        <button
+          onClick={() => navigate("/agendamentos")}
+          className="w-full flex items-center gap-3 hover:bg-gray-800 p-3 rounded font-medium transition"
+        >
+          <FiCalendar size={18} />
+          Agendamentos
+        </button>
 
       </nav>
     </aside>
