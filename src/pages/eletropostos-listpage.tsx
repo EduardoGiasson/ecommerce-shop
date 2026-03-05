@@ -1,9 +1,9 @@
-
+import { useState } from "react";
 import { CreateEletroPostoDialog } from "@/cases/eletroposto/components/create-eletroposto-dialog";
 import { EletropostoCard } from "@/cases/eletroposto/components/eletroposto-card";
 import type { EletroPostoDTO } from "@/cases/eletroposto/dtos/eletropostos.dto";
 import { useEletroPostos } from "@/cases/eletroposto/hooks/use-eletropostos";
-import { useState } from "react";
+import { Plus } from "lucide-react";
 
 export function CadastroEletroPostosPage() {
   const { data: eletropostos, isLoading } = useEletroPostos();
@@ -11,7 +11,6 @@ export function CadastroEletroPostosPage() {
   const [search] = useState("");
   const [active] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-
   const [selectedEletroposto, setSelectedEletroposto] =
     useState<EletroPostoDTO | null>(null);
 
@@ -37,20 +36,19 @@ export function CadastroEletroPostosPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <section className="min-h-screen bg-gray-200 rounded-2xl shadow-lg p-8 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Meus Eletropostos</h1>
 
         <button
           onClick={handleCreate}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition flex items-center gap-2"
         >
-          + Cadastrar novo eletroposto
+          <Plus size={18} strokeWidth={2.5} />
+          Cadastrar eletroposto
         </button>
       </div>
-
-      <div className="w-full h-px bg-gray-200 my-2" />
 
       <CreateEletroPostoDialog
         open={openDialog}
@@ -58,10 +56,10 @@ export function CadastroEletroPostosPage() {
         onClose={() => setOpenDialog(false)}
       />
 
-      {isLoading && <p className="text-gray-500">Carregando eletropostos...</p>}
+      {isLoading && <p className="text-gray-600">Carregando eletropostos...</p>}
 
       {!isLoading && eletropostosFiltered?.length === 0 && (
-        <p className="text-gray-500">Nenhum eletroposto encontrado.</p>
+        <p className="text-gray-600">Nenhum eletroposto encontrado.</p>
       )}
 
       <div className="flex gap-6 flex-wrap">
@@ -73,6 +71,6 @@ export function CadastroEletroPostosPage() {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }

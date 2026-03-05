@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { LogOut } from "lucide-react";
 import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 import { api } from "@/lib/axios";
-import { OrderDataTable } from "@/cases/orders/components/data-table/order-data-table";
 
 export function UserProfilePage() {
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ export function UserProfilePage() {
         const { data: customers } = await api.get("/customers");
 
         const customerFound = customers.find(
-          (c: CustomerDTO) => c.userId === user.id
+          (c: CustomerDTO) => c.userId === user.id,
         );
 
         if (!customerFound) {
@@ -67,9 +66,7 @@ export function UserProfilePage() {
   return (
     <div className="relative min-h-screen w-full px-10 py-10">
       <div className="mb-10 flex items-center gap-4">
-        <h2 className="text-3xl font-bold">
-          Olá, {customer.name}!
-        </h2>
+        <h2 className="text-3xl font-bold">Olá, {customer.name}!</h2>
 
         <button
           onClick={handleLogout}
@@ -86,16 +83,6 @@ export function UserProfilePage() {
         <InfoItem label="CEP" value={customer.zipcode} />
         <InfoItem label="Cidade" value={customer.city?.name} />
       </div>
-
-      <h3 className="mt-12 mb-4 text-2xl font-semibold">Pedidos</h3>
-      <OrderDataTable />
-
-      <button
-        onClick={() => navigate("/products")}
-        className="fixed bottom-6 right-6 rounded bg-red-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-red-700"
-      >
-        Voltar
-      </button>
     </div>
   );
 }

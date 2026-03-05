@@ -21,6 +21,7 @@ import {
 
 import { useEletroPostos } from "@/cases/eletroposto/hooks/use-eletropostos";
 import { useCars } from "@/cases/cars/hooks/use-cars";
+import { toast } from "react-toastify";
 
 type Props = {
   open: boolean;
@@ -38,16 +39,10 @@ type AgendamentoForm = {
   status: AgendamentoStatus;
 };
 
-export function AgendamentoDialog({
-  open,
-  onClose,
-  agendamento,
-}: Props) {
-  const { mutateAsync: create, isPending: creating } =
-    useCreateAgendamento();
+export function AgendamentoDialog({ open, onClose, agendamento }: Props) {
+  const { mutateAsync: create, isPending: creating } = useCreateAgendamento();
 
-  const { mutateAsync: update, isPending: updating } =
-    useUpdateAgendamento();
+  const { mutateAsync: update, isPending: updating } = useUpdateAgendamento();
 
   const { data: eletropostos } = useEletroPostos();
   const { data: cars } = useCars();
@@ -92,7 +87,7 @@ export function AgendamentoDialog({
         !form.horaInicio ||
         !form.horaFim
       ) {
-        alert("Preencha todos os campos");
+        toast.error("Preencha todos os campos obrigatórios.");
         return;
       }
 
@@ -101,14 +96,18 @@ export function AgendamentoDialog({
           id: agendamento.id,
           ...form,
         });
+
+        toast.success("Agendamento atualizado com sucesso!");
       } else {
         await create(form);
+
+        toast.success("Agendamento criado com sucesso!");
       }
 
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar agendamento");
+      toast.error("Erro ao salvar agendamento.");
     }
   }
 
@@ -147,9 +146,7 @@ export function AgendamentoDialog({
             <select
               className="border rounded px-2 py-1 w-full"
               value={form.carId}
-              onChange={(e) =>
-                setForm({ ...form, carId: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, carId: e.target.value })}
             >
               <option value="">Selecione</option>
               {cars?.map((c) => (
@@ -166,9 +163,7 @@ export function AgendamentoDialog({
             <Input
               type="date"
               value={form.data}
-              onChange={(e) =>
-                setForm({ ...form, data: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, data: e.target.value })}
             />
           </div>
 
@@ -178,9 +173,7 @@ export function AgendamentoDialog({
             <Input
               type="time"
               value={form.horaInicio}
-              onChange={(e) =>
-                setForm({ ...form, horaInicio: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, horaInicio: e.target.value })}
             />
           </div>
 
@@ -190,9 +183,7 @@ export function AgendamentoDialog({
             <Input
               type="time"
               value={form.horaFim}
-              onChange={(e) =>
-                setForm({ ...form, horaFim: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, horaFim: e.target.value })}
             />
           </div>
 
