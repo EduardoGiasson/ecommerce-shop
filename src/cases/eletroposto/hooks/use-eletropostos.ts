@@ -7,11 +7,12 @@ import { useCurrentCustomer } from "@/cases/customers/hooks/use-customer";
 
 export function useEletroPostos() {
   const { customer } = useCurrentCustomer();
+  const customerId = customer?.id;
 
   return useQuery({
-    queryKey: ["eletropostos", customer?.id],
-    queryFn: () => EletroPostoService.list(),
-    enabled: !!customer?.id,
+    queryKey: ["eletropostos", customerId],
+    queryFn: () => EletroPostoService.listByCustomer(customerId as string),
+    enabled: !!customerId,
   });
 }
 
@@ -29,13 +30,13 @@ export function useCreateEletroPosto() {
 
       return EletroPostoService.create({
         ...data,
-        customerId: customer.id, // 🔥 EXATAMENTE O QUE O BACK ESPERA
+        customerId: customer.id,
       });
     },
 
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["eletropostos"],
+        queryKey: ["eletropostos", customer?.id],
       }),
   });
 }
@@ -57,13 +58,13 @@ export function useUpdateEletroPosto() {
 
       return EletroPostoService.update(id, {
         ...data,
-        customerId: customer.id, // 🔥 EXATAMENTE O QUE O BACK ESPERA
+        customerId: customer.id,
       });
     },
 
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["eletropostos"],
+        queryKey: ["eletropostos", customer?.id],
       }),
   });
 }
@@ -72,13 +73,14 @@ export function useUpdateEletroPosto() {
 
 export function useDeleteEletroPosto() {
   const queryClient = useQueryClient();
+  const { customer } = useCurrentCustomer();
 
   return useMutation({
     mutationFn: (id: string) => EletroPostoService.remove(id),
 
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["eletropostos"],
+        queryKey: ["eletropostos", customer?.id],
       }),
   });
 }

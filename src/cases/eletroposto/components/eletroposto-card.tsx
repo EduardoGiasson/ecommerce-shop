@@ -11,7 +11,6 @@ export function EletropostoCard({ eletroposto, onEdit }: Props) {
   return (
     <Card className="max-w-[220px] w-full hover:shadow-lg transition-all duration-200 p-3 flex flex-col items-center text-center">
 
-      {/* Imagem */}
       {eletroposto.imageUrl && (
         <img
           src={eletroposto.imageUrl}
@@ -20,19 +19,22 @@ export function EletropostoCard({ eletroposto, onEdit }: Props) {
         />
       )}
 
-      {/* Nome */}
       <h3 className="text-sm font-semibold text-gray-800 mt-2 leading-tight">
         {eletroposto.name}
       </h3>
 
-      {/* Descrição */}
-      {eletroposto.description && (
-        <p className="text-xs text-gray-500 mt-[2px] line-clamp-3">
-          {eletroposto.description}
+      {eletroposto.endereco && (
+        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+          {eletroposto.endereco}
         </p>
       )}
 
-      {/* Status */}
+      {eletroposto.potencia && (
+        <p className="text-xs text-blue-600 font-semibold mt-1">
+          {eletroposto.potencia} kW
+        </p>
+      )}
+
       <span
         className={`text-xs font-semibold mt-1 ${
           eletroposto.active ? "text-green-600" : "text-red-600"
@@ -41,7 +43,6 @@ export function EletropostoCard({ eletroposto, onEdit }: Props) {
         {eletroposto.active ? "Ativo" : "Inativo"}
       </span>
 
-      {/* Botão editar */}
       <button
         disabled={!onEdit}
         onClick={() => onEdit?.(eletroposto)}

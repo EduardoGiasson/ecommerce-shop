@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { CreateEletroPostoDialog } from "@/cases/eletroposto/components/create-eletroposto-dialog";
 import { EletropostoCard } from "@/cases/eletroposto/components/eletroposto-card";
 import type { EletroPostoDTO } from "@/cases/eletroposto/dtos/eletropostos.dto";
@@ -6,7 +6,7 @@ import { useEletroPostos } from "@/cases/eletroposto/hooks/use-eletropostos";
 import { Plus } from "lucide-react";
 
 export function CadastroEletroPostosPage() {
-  const { data: eletropostos, isLoading } = useEletroPostos();
+  const { data: eletropostos = [], isLoading } = useEletroPostos();
 
   const [search] = useState("");
   const [active] = useState("");
@@ -24,19 +24,22 @@ export function CadastroEletroPostosPage() {
     setOpenDialog(true);
   };
 
-  const eletropostosFiltered = eletropostos?.filter((eletroposto) => {
-    const matchSearch = eletroposto.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  const eletropostosFiltered = useMemo(() => {
+    return eletropostos.filter((eletroposto) => {
+      const matchSearch = eletroposto.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
-    const matchActive =
-      active === "" ? true : eletroposto.active === (active === "true");
+      const matchActive =
+        active === "" ? true : eletroposto.active === (active === "true");
 
-    return matchSearch && matchActive;
-  });
+      return matchSearch && matchActive;
+    });
+  }, [eletropostos, search, active]);
 
   return (
     <section className="min-h-screen bg-gray-200 rounded-2xl shadow-lg p-8 flex flex-col gap-6">
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Meus Eletropostos</h1>
@@ -56,14 +59,16 @@ export function CadastroEletroPostosPage() {
         onClose={() => setOpenDialog(false)}
       />
 
-      {isLoading && <p className="text-gray-600">Carregando eletropostos...</p>}
+      {isLoading && (
+        <p className="text-gray-600">Carregando eletropostos...</p>
+      )}
 
-      {!isLoading && eletropostosFiltered?.length === 0 && (
+      {!isLoading && eletropostosFiltered.length === 0 && (
         <p className="text-gray-600">Nenhum eletroposto encontrado.</p>
       )}
 
       <div className="flex gap-6 flex-wrap">
-        {eletropostosFiltered?.map((eletroposto) => (
+        {eletropostosFiltered.map((eletroposto) => (
           <EletropostoCard
             key={eletroposto.id}
             eletroposto={eletroposto}
@@ -71,6 +76,7 @@ export function CadastroEletroPostosPage() {
           />
         ))}
       </div>
+
     </section>
   );
 }

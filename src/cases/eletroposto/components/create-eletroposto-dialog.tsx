@@ -8,7 +8,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -28,20 +27,21 @@ export function CreateEletroPostoDialog({
   onClose,
   eletroposto,
 }: Props) {
-  const { mutateAsync: create, isPending: creating } =
-    useCreateEletroPosto();
-  const { mutateAsync: update, isPending: updating } =
-    useUpdateEletroPosto();
+  const { mutateAsync: create, isPending: creating } = useCreateEletroPosto();
+  const { mutateAsync: update, isPending: updating } = useUpdateEletroPosto();
 
   const isEditing = !!eletroposto;
   const isSaving = creating || updating;
 
   const emptyForm = {
     name: "",
-    description: "",
+    rua: "",
+    numero: "",
+    bairro: "",
+    cidade: "",
     imageUrl: "",
+    potencia: "",
     active: true,
-    brand: "",
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -52,10 +52,13 @@ export function CreateEletroPostoDialog({
     if (eletroposto) {
       setForm({
         name: eletroposto.name ?? "",
-        description: eletroposto.description ?? "",
+        rua: "",
+        numero: "",
+        bairro: "",
+        cidade: "",
         imageUrl: eletroposto.imageUrl ?? "",
+        potencia: eletroposto.potencia?.toString() ?? "",
         active: eletroposto.active ?? true,
-        brand: eletroposto.brand ?? "",
       });
     } else {
       setForm(emptyForm);
@@ -69,11 +72,23 @@ export function CreateEletroPostoDialog({
         return;
       }
 
+      if (!form.rua || !form.numero || !form.bairro || !form.cidade) {
+        alert("Preencha todos os campos de endereço");
+        return;
+      }
+
+      if (!form.potencia) {
+        alert("Potência obrigatória");
+        return;
+      }
+
+      const endereco = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade}`;
+
       const payload = {
         name: form.name.trim(),
-        description: form.description?.trim() || undefined,
+        endereco,
         imageUrl: form.imageUrl?.trim() || undefined,
-        brand: form.brand?.trim() || undefined,
+        potencia: Number(form.potencia),
         active: Boolean(form.active),
       };
 
@@ -107,31 +122,56 @@ export function CreateEletroPostoDialog({
 
         <div className="flex flex-col gap-4">
           <Input
-            placeholder="Nome"
+            placeholder="Nome do eletroposto"
             value={form.name}
             onChange={(e) =>
               setForm({ ...form, name: e.target.value })
             }
           />
 
-          <Textarea
-            placeholder="Descrição"
-            value={form.description}
+          <Input
+            placeholder="Rua"
+            value={form.rua}
             onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
+              setForm({ ...form, rua: e.target.value })
             }
           />
 
           <Input
-            placeholder="Marca"
-            value={form.brand}
+            placeholder="Número"
+            value={form.numero}
             onChange={(e) =>
-              setForm({ ...form, brand: e.target.value })
+              setForm({ ...form, numero: e.target.value })
             }
           />
 
           <Input
-            placeholder="Imagem URL"
+            placeholder="Bairro"
+            value={form.bairro}
+            onChange={(e) =>
+              setForm({ ...form, bairro: e.target.value })
+            }
+          />
+
+          <Input
+            placeholder="Cidade"
+            value={form.cidade}
+            onChange={(e) =>
+              setForm({ ...form, cidade: e.target.value })
+            }
+          />
+
+          <Input
+            type="number"
+            placeholder="Potência (kW)"
+            value={form.potencia}
+            onChange={(e) =>
+              setForm({ ...form, potencia: e.target.value })
+            }
+          />
+
+          <Input
+            placeholder="URL da imagem"
             value={form.imageUrl}
             onChange={(e) =>
               setForm({ ...form, imageUrl: e.target.value })
@@ -153,7 +193,7 @@ export function CreateEletroPostoDialog({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             {isSaving ? "Salvando..." : "Salvar"}
           </button>

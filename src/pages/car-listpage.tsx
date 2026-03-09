@@ -10,8 +10,6 @@ export function CadastroCarrosPage() {
   const [search] = useState("");
   const [active] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-
-  // 🔥 novo estado
   const [selectedCar, setSelectedCar] = useState<CarDTO | null>(null);
 
   const handleCreate = () => {
@@ -34,7 +32,7 @@ export function CadastroCarrosPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <section className="min-h-screen bg-gray-200 rounded-2xl shadow-lg p-8 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Meus Carros</h1>
@@ -47,19 +45,16 @@ export function CadastroCarrosPage() {
         </button>
       </div>
 
-      <div className="w-full h-px bg-gray-200 my-2" />
-
-      {/* 🔥 agora recebe car */}
       <CreateCarDialog
         open={openDialog}
         car={selectedCar}
         onClose={() => setOpenDialog(false)}
       />
 
-      {isLoading && <p className="text-gray-500">Carregando carros...</p>}
+      {isLoading && <p className="text-gray-600">Carregando carros...</p>}
 
       {!isLoading && carsFiltered?.length === 0 && (
-        <p className="text-gray-500">Nenhum carro encontrado.</p>
+        <p className="text-gray-600">Nenhum carro encontrado.</p>
       )}
 
       <div className="flex gap-6 flex-wrap">
@@ -67,6 +62,6 @@ export function CadastroCarrosPage() {
           <CarCard key={car.id} car={car} onEdit={handleEdit} />
         ))}
       </div>
-    </div>
+    </section>
   );
 }

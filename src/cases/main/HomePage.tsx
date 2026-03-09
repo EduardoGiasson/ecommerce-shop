@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { MapPin } from "lucide-react";
 import logo from "@/assets/images/logo.png";
 import { UserMap } from "@/components/ui/UserMap";
 
 export function HomePage() {
   const navigate = useNavigate();
+  const [city, setCity] = useState("");
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-8">
@@ -56,8 +59,17 @@ export function HomePage() {
           </div>
 
           {/* Mapa */}
-          <div className="flex-1 h-[500px] rounded-xl overflow-hidden shadow-lg bg-white">
-            <UserMap />
+          <div className="flex flex-col items-center flex-1">
+            <div className="h-[500px] w-full rounded-xl overflow-hidden shadow-lg bg-white">
+              <UserMap onCityChange={setCity} />
+            </div>
+
+            {city && (
+              <div className="flex items-center gap-2 mt-4 text-gray-700 font-medium">
+                <MapPin size={18} className="text-red-500" />
+                {city}
+              </div>
+            )}
           </div>
         </div>
       </div>

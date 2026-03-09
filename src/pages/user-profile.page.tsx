@@ -12,7 +12,7 @@ export function UserProfilePage() {
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("user");
-    navigate("/login");
+    navigate("/");
   }, [navigate]);
 
   useEffect(() => {
