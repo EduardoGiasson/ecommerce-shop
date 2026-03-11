@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { LogOut } from "lucide-react";
-import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 import { api } from "@/lib/axios";
+import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 
 export function UserProfilePage() {
   const navigate = useNavigate();

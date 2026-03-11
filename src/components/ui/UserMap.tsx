@@ -62,12 +62,16 @@ export function UserMap({ onCityChange }: Props) {
     });
   }, []);
 
-  async function geocodeAddress(address: string): Promise<LatLngTuple | null> {
+  async function geocodeAddress(
+    rua: string,
+    numero: string,
+    bairro: string,
+    cidade: string,
+    cep?: string
+  ): Promise<LatLngTuple | null> {
     try {
-      // remove número da rua (ex: ", 1")
-      const addressWithoutNumber = address.replace(/,\s*\d+/, "");
-
-      const query = `${addressWithoutNumber}, Brasil`;
+      let query = `${rua}, ${numero}, ${bairro}, ${cidade}, Brasil`;
+      if (cep) query += `, ${cep}`;
 
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
@@ -95,16 +99,22 @@ export function UserMap({ onCityChange }: Props) {
     const markers: MarkerData[] = [];
 
     for (const posto of list) {
-      if (!posto.endereco) continue;
+      const { rua, numero, bairro, cidade, cep, name, id } = posto;
 
-      const coords = await geocodeAddress(posto.endereco);
+      if (!rua || !cidade) continue; // endereço mínimo obrigatório
+
+      const coords = await geocodeAddress(rua, numero || "", bairro || "", cidade, cep);
 
       if (!coords) continue;
 
+      const enderecoCompleto = `${rua}${numero ? ", " + numero : ""}${
+        bairro ? ", " + bairro : ""
+      }, ${cidade}${cep ? " - " + cep : ""}`;
+
       markers.push({
-        id: posto.id,
-        name: posto.name,
-        endereco: posto.endereco,
+        id,
+        name,
+        endereco: enderecoCompleto,
         position: coords,
       });
     }

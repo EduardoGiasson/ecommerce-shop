@@ -1,3 +1,4 @@
+
 import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
 

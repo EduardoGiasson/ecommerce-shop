@@ -21,9 +21,10 @@ import { toast } from "react-toastify";
 import { useCities } from "@/cases/cities/hooks/use-city";
 import { useStates } from "@/cases/states/hooks/use-state";
 import { useCreateCustomer } from "@/cases/customers/hooks/use-customer";
-import type { CustomerDTO } from "@/cases/customers/dtos/customer";
+
 
 import { supabase } from "@/lib/supabase-client";
+import type { CustomerDTO } from "@/cases/customers/dtos/customer";
 
 export default function RegisterPage() {
   const navigate = useNavigate();

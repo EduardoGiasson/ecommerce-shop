@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { CustomerDTO } from "../dtos/customer";
 import { CustomerService } from "../services/customer.service";
 import { useMemo } from "react";
+import type { CustomerDTO } from "../dtos/customer";
 
 export function useCustomers() {
   return useQuery<CustomerDTO[]>({
