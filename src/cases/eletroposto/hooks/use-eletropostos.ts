@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { EletroPostoService } from "../services/eletropostos.service";
 import type { EletroPostoDTO } from "../dtos/eletropostos.dto";
 import { useCurrentCustomer } from "@/cases/customers/hooks/use-customer";
+import { toast } from "react-toastify";
 
 /* ================= LIST ================= */
 
@@ -34,10 +35,20 @@ export function useCreateEletroPosto() {
       });
     },
 
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["eletropostos", customer?.id],
-      }),
+      });
+
+      toast.success("Eletroposto criado com sucesso!");
+    },
+
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || "Erro ao criar eletroposto";
+
+      toast.error(message);
+    },
   });
 }
 
@@ -62,10 +73,20 @@ export function useUpdateEletroPosto() {
       });
     },
 
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["eletropostos", customer?.id],
-      }),
+      });
+
+      toast.success("Eletroposto atualizado com sucesso!");
+    },
+
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || "Erro ao atualizar eletroposto";
+
+      toast.error(message);
+    },
   });
 }
 
@@ -78,9 +99,24 @@ export function useDeleteEletroPosto() {
   return useMutation({
     mutationFn: (id: string) => EletroPostoService.remove(id),
 
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["eletropostos", customer?.id],
-      }),
+      });
+
+      toast.success("Eletroposto excluído com sucesso!");
+    },
+
+    onError: (error: any) => {
+      const backendMessage = error?.response?.data?.message;
+
+      if (backendMessage) {
+        toast.error(backendMessage);
+      } else {
+        toast.error(
+          "Não é possível excluir este eletroposto, pois esta vinculado em um agendamento!",
+        );
+      }
+    },
   });
 }

@@ -67,14 +67,6 @@ export function UserProfilePage() {
     <div className="relative min-h-screen w-full px-10 py-10">
       <div className="mb-10 flex items-center gap-4">
         <h2 className="text-3xl font-bold">Olá, {customer.name}!</h2>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-900"
-        >
-          <LogOut size={18} />
-          Sair
-        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-8 text-lg md:grid-cols-2 lg:grid-cols-4">

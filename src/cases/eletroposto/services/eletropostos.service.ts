@@ -22,10 +22,13 @@ export const EletroPostoService = {
 
   async create(data: {
     name: string;
-    endereco?: string;
+    cidade: string;
+    bairro: string;
+    rua: string;
+    numero: string;
+    cep: string;
     potencia?: number;
     imageUrl?: string;
-    active?: boolean;
     customerId: string;
   }): Promise<EletroPostoDTO> {
     const { data: result } = await api.post(ENDPOINT, data);
@@ -38,12 +41,15 @@ export const EletroPostoService = {
     id: string,
     data: {
       name?: string;
-      endereco?: string;
+      cidade?: string;
+      bairro?: string;
+      rua?: string;
+      numero?: string;
+      cep?: string;
       potencia?: number;
       imageUrl?: string;
-      active?: boolean;
       customerId: string;
-    }
+    },
   ): Promise<EletroPostoDTO> {
     const { data: result } = await api.put(`${ENDPOINT}/${id}`, data);
     return result;
@@ -52,6 +58,16 @@ export const EletroPostoService = {
   /* ================= DELETE ================= */
 
   async remove(id: string): Promise<void> {
-    await api.delete(`${ENDPOINT}/${id}`);
+    try {
+      await api.delete(`${ENDPOINT}/${id}`);
+    } catch (error: any) {
+      if (error?.response?.data?.code === "23503") {
+        throw new Error(
+          "Não é possível excluir este eletroposto, pois está vinculado a um agendamento!",
+        );
+      }
+
+      throw error;
+    }
   },
 };

@@ -20,18 +20,18 @@ export function CategoryMenu({}: CategoryMenuProps) {
       {/* Notificação */}
       <Button
         variant="ghost"
-        className="h-10 w-10 rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+        className="h-10 w-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white/20 transition"
       >
-        <Bell size={18} className="text-gray-700" />
+        <Bell size={18} className="text-white" />
       </Button>
 
       {/* Perfil */}
       <Button
         variant="ghost"
         onClick={() => navigate("/profile")}
-        className="h-10 w-10 rounded-full border-2 border-gray-900 flex items-center justify-center hover:bg-gray-100 transition"
+        className="h-10 w-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white/20 transition"
       >
-        <User size={20} className="text-gray-700" />
+        <User size={20} className="text-white" />
       </Button>
     </nav>
   );

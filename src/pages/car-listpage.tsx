@@ -1,16 +1,19 @@
 import { CarCard } from "@/cases/cars/components/cars-card";
 import { useState } from "react";
 import { CreateCarDialog } from "@/cases/cars/components/create-car-dialog";
-import { useCars } from "@/cases/cars/hooks/use-cars";
+import { useCars, useDeleteCar } from "@/cases/cars/hooks/use-cars";
 import type { CarDTO } from "@/cases/cars/dtos/cars.dto";
+import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 
 export function CadastroCarrosPage() {
   const { data: cars, isLoading } = useCars();
+  const { mutate: deleteCar } = useDeleteCar();
 
   const [search] = useState("");
   const [active] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCar, setSelectedCar] = useState<CarDTO | null>(null);
+  const [carToDelete, setCarToDelete] = useState<CarDTO | null>(null);
 
   const handleCreate = () => {
     setSelectedCar(null);
@@ -20,6 +23,20 @@ export function CadastroCarrosPage() {
   const handleEdit = (car: CarDTO) => {
     setSelectedCar(car);
     setOpenDialog(true);
+  };
+
+  const handleDelete = (id: string) => {
+    const car = cars?.find((c) => c.id === id);
+    if (!car) return;
+
+    setCarToDelete(car);
+  };
+
+  const confirmDelete = () => {
+    if (!carToDelete?.id) return;
+
+    deleteCar(carToDelete.id);
+    setCarToDelete(null);
   };
 
   const carsFiltered = cars?.filter((car) => {
@@ -51,6 +68,14 @@ export function CadastroCarrosPage() {
         onClose={() => setOpenDialog(false)}
       />
 
+      <ConfirmDeleteDialog
+        open={!!carToDelete}
+        title="Excluir carro"
+        description={`Deseja realmente excluir o carro "${carToDelete?.name}"?`}
+        onCancel={() => setCarToDelete(null)}
+        onConfirm={confirmDelete}
+      />
+
       {isLoading && <p className="text-gray-600">Carregando carros...</p>}
 
       {!isLoading && carsFiltered?.length === 0 && (
@@ -59,7 +84,12 @@ export function CadastroCarrosPage() {
 
       <div className="flex gap-6 flex-wrap">
         {carsFiltered?.map((car) => (
-          <CarCard key={car.id} car={car} onEdit={handleEdit} />
+          <CarCard
+            key={car.id}
+            car={car}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         ))}
       </div>
     </section>

@@ -36,7 +36,7 @@ export function UserMap({ onCityChange }: Props) {
       setPosition([lat, lon]);
 
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
       );
 
       const data = await response.json();
@@ -62,29 +62,32 @@ export function UserMap({ onCityChange }: Props) {
     });
   }, []);
 
- async function geocodeAddress(address: string): Promise<LatLngTuple | null> {
-  try {
-    const query = `${address}, Brasil`;
+  async function geocodeAddress(address: string): Promise<LatLngTuple | null> {
+    try {
+      // remove número da rua (ex: ", 1")
+      const addressWithoutNumber = address.replace(/,\s*\d+/, "");
 
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-        query
-      )}&format=json&limit=1`
-    );
+      const query = `${addressWithoutNumber}, Brasil`;
 
-    const data = await response.json();
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          query,
+        )}&format=json&limit=1`,
+      );
 
-    if (!data.length) {
-      console.warn("Endereço não encontrado:", query);
+      const data = await response.json();
+
+      if (!data.length) {
+        console.warn("Endereço não encontrado:", query);
+        return null;
+      }
+
+      return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+    } catch (err) {
+      console.error("Erro ao buscar coordenadas:", err);
       return null;
     }
-
-    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-  } catch (err) {
-    console.error("Erro ao buscar coordenadas:", err);
-    return null;
   }
-}
 
   async function loadEletropostos() {
     const list = await EletroPostoService.list();

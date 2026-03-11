@@ -1,12 +1,19 @@
 import type { AgendamentoDTO } from "../dtos/agendamento.dto";
+import { Pencil, Trash2 } from "lucide-react";
 
 type Props = {
   data: AgendamentoDTO[];
   loading?: boolean;
   onEdit: (agendamento: AgendamentoDTO) => void;
+  onDelete: (agendamento: AgendamentoDTO) => void;
 };
 
-export function AgendamentoDataTable({ data, loading, onEdit }: Props) {
+export function AgendamentoDataTable({
+  data,
+  loading,
+  onEdit,
+  onDelete,
+}: Props) {
   if (loading) {
     return <p className="text-gray-600">Carregando...</p>;
   }
@@ -37,13 +44,23 @@ export function AgendamentoDataTable({ data, loading, onEdit }: Props) {
               <td className="p-4 text-gray-700">{item.horaInicio}</td>
               <td className="p-4 text-gray-700">{item.horaFim}</td>
               <td className="p-4 capitalize text-gray-800">{item.status}</td>
+
               <td className="p-4">
-                <button
-                  onClick={() => onEdit(item)}
-                  className="text-blue-600 hover:text-blue-800 font-medium transition"
-                >
-                  Editar
-                </button>
+                <div className="flex gap-3 items-center">
+                  <button
+                    onClick={() => onEdit(item)}
+                    className="text-blue-600 hover:text-blue-800 transition"
+                  >
+                    <Pencil size={18} />
+                  </button>
+
+                  <button
+                    onClick={() => onDelete(item)}
+                    className="text-red-600 hover:text-red-800 transition"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
