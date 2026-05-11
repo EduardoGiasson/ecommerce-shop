@@ -1,8 +1,9 @@
-export interface FormulaDTO {
-
+export interface TransacaoCreditosDTO {
   id: string;
 
-  energia_kwh: number;
+  carteira: string;
+
+  energia_consumida_kwh: number;
 
   possui_painel_solar: boolean;
 
@@ -16,5 +17,7 @@ export interface FormulaDTO {
 
   data_carregamento: string;
 
-  createdAt: string;
+  hash_transacao: string;
+
+  criado_em: string;
 }

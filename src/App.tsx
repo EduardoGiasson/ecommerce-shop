@@ -24,31 +24,23 @@ import { CadastroEletroPostosPage } from "./pages/eletropostos-listpage";
 
 import { AgendamentosPage } from "./pages/agendamentos-listpage";
 
-
 import "leaflet/dist/leaflet.css";
 import { FormulaCreditosPage } from "./pages/formula-creditos.page";
+import { TransacoesCreditosPage } from "./pages/transacoes-creditos.page";
 
 export default function App() {
-
   return (
     <>
-
       <Routes>
-
         {/* Públicas */}
 
-        <Route
-          path="/"
-          element={<HomePage />}
-        />
+        <Route path="/" element={<HomePage />} />
 
         <Route
           path="/login"
           element={
             <PublicRoute>
-
               <LoginPage />
-
             </PublicRoute>
           }
         />
@@ -57,9 +49,7 @@ export default function App() {
           path="/register"
           element={
             <PublicRoute>
-
               <RegisterPage />
-
             </PublicRoute>
           }
         />
@@ -69,58 +59,36 @@ export default function App() {
         <Route
           element={
             <ProtectedRoute>
-
               <DashboardLayout />
-
             </ProtectedRoute>
           }
         >
+          <Route path="/products" element={<InicialPage />} />
 
-          <Route
-            path="/products"
-            element={<InicialPage />}
-          />
+          <Route path="/cars" element={<CadastroCarrosPage />} />
 
-          <Route
-            path="/cars"
-            element={<CadastroCarrosPage />}
-          />
+          <Route path="/eletropostos" element={<CadastroEletroPostosPage />} />
 
-          <Route
-            path="/eletropostos"
-            element={<CadastroEletroPostosPage />}
-          />
+          <Route path="/profile" element={<UserProfilePage />} />
 
-          <Route
-            path="/profile"
-            element={<UserProfilePage />}
-          />
-
-          <Route
-            path="/agendamentos"
-            element={<AgendamentosPage />}
-          />
+          <Route path="/agendamentos" element={<AgendamentosPage />} />
 
           {/* FORMULA */}
 
-          <Route
-            path="/formula"
-            element={<FormulaCreditosPage />}
-          />
-
+          <Route path="/formula" element={<FormulaCreditosPage />} />
         </Route>
+
+        <Route
+          path="/transacoes-creditos"
+          element={<TransacoesCreditosPage />}
+        />
 
         {/* fallback */}
 
-        <Route
-          path="*"
-          element={<Navigate to="/" />}
-        />
-
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
       <ToastContainer />
-
     </>
   );
 }

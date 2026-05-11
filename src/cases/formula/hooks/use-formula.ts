@@ -1,42 +1,26 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-
-import { FormulaService } from "../services/formula.service";
-
-import type { FormulaDTO } from "../dtos/formula.dto";
+import { TransacaoCreditosService } from "../services/formula.service";
+import type { TransacaoCreditosDTO } from "../dtos/formula.dto";
 
 /* ================= LIST ================= */
 
-export function useFormulas() {
-
+export function useTransacoesCreditos() {
   return useQuery({
+    queryKey: ["transacoes-creditos"],
 
-    queryKey: ["formulas"],
-
-    queryFn: () =>
-      FormulaService.list(),
+    queryFn: () => TransacaoCreditosService.list(),
   });
 }
 
 /* ================= FIND ================= */
 
-export function useFormula(
-  id?: string,
-) {
-
+export function useTransacaoCreditos(id?: string) {
   return useQuery({
+    queryKey: ["transacao-creditos", id],
 
-    queryKey: ["formula", id],
-
-    queryFn: () =>
-      FormulaService.findById(
-        id as string,
-      ),
+    queryFn: () => TransacaoCreditosService.findById(id as string),
 
     enabled: !!id,
   });
@@ -44,44 +28,24 @@ export function useFormula(
 
 /* ================= CREATE ================= */
 
-export function useCreateFormula() {
-
-  const queryClient =
-    useQueryClient();
+export function useCreateTransacaoCreditos() {
+  const queryClient = useQueryClient();
 
   return useMutation({
-
-    mutationFn: (
-      data: Omit<
-        FormulaDTO,
-        "id" |
-        "creditos_gerados" |
-        "valor_total" |
-        "createdAt"
-      >,
-    ) =>
-
-      FormulaService.create(data),
+    mutationFn: (data: Omit<TransacaoCreditosDTO, "id" | "criado_em">) =>
+      TransacaoCreditosService.create(data),
 
     onSuccess: () => {
-
       queryClient.invalidateQueries({
-        queryKey: ["formulas"],
+        queryKey: ["transacoes-creditos"],
       });
 
-      toast.success(
-        "Simulação criada com sucesso!",
-      );
+      toast.success("Transação criada com sucesso!");
     },
 
     onError: (error: any) => {
-
       const message =
-
-        error?.response?.data
-          ?.message ||
-
-        "Erro ao criar simulação";
+        error?.response?.data?.message || "Erro ao criar transação";
 
       toast.error(message);
     },
@@ -90,44 +54,28 @@ export function useCreateFormula() {
 
 /* ================= UPDATE ================= */
 
-export function useUpdateFormula() {
-
-  const queryClient =
-    useQueryClient();
+export function useUpdateTransacaoCreditos() {
+  const queryClient = useQueryClient();
 
   return useMutation({
-
     mutationFn: ({
       id,
       ...data
-    }: FormulaDTO & {
+    }: TransacaoCreditosDTO & {
       id: string;
-    }) =>
-
-      FormulaService.update(
-        id,
-        data,
-      ),
+    }) => TransacaoCreditosService.update(id, data),
 
     onSuccess: () => {
-
       queryClient.invalidateQueries({
-        queryKey: ["formulas"],
+        queryKey: ["transacoes-creditos"],
       });
 
-      toast.success(
-        "Simulação atualizada com sucesso!",
-      );
+      toast.success("Transação atualizada com sucesso!");
     },
 
     onError: (error: any) => {
-
       const message =
-
-        error?.response?.data
-          ?.message ||
-
-        "Erro ao atualizar simulação";
+        error?.response?.data?.message || "Erro ao atualizar transação";
 
       toast.error(message);
     },
@@ -136,38 +84,23 @@ export function useUpdateFormula() {
 
 /* ================= DELETE ================= */
 
-export function useDeleteFormula() {
-
-  const queryClient =
-    useQueryClient();
+export function useDeleteTransacaoCreditos() {
+  const queryClient = useQueryClient();
 
   return useMutation({
-
-    mutationFn: (
-      id: string,
-    ) =>
-
-      FormulaService.remove(id),
+    mutationFn: (id: string) => TransacaoCreditosService.remove(id),
 
     onSuccess: () => {
-
       queryClient.invalidateQueries({
-        queryKey: ["formulas"],
+        queryKey: ["transacoes-creditos"],
       });
 
-      toast.success(
-        "Simulação removida com sucesso!",
-      );
+      toast.success("Transação removida com sucesso!");
     },
 
     onError: (error: any) => {
-
       const message =
-
-        error?.response?.data
-          ?.message ||
-
-        "Erro ao remover simulação";
+        error?.response?.data?.message || "Erro ao remover transação";
 
       toast.error(message);
     },

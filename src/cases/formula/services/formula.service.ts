@@ -1,30 +1,21 @@
 import { api } from "@/lib/axios";
-import type { FormulaDTO } from "../dtos/formula.dto";
+import type { TransacaoCreditosDTO } from "../dtos/formula.dto";
 
-const ENDPOINT = "/formula";
+const ENDPOINT = "/transacoes-creditos";
 
-export const FormulaService = {
-
+export const TransacaoCreditosService = {
   /* ================= LIST ================= */
 
-  async list(): Promise<FormulaDTO[]> {
-
-    const { data } =
-      await api.get(ENDPOINT);
+  async list(): Promise<TransacaoCreditosDTO[]> {
+    const { data } = await api.get(ENDPOINT);
 
     return data;
   },
 
   /* ================= FIND BY ID ================= */
 
-  async findById(
-    id: string,
-  ): Promise<FormulaDTO> {
-
-    const { data } =
-      await api.get(
-        `${ENDPOINT}/${id}`,
-      );
+  async findById(id: string): Promise<TransacaoCreditosDTO> {
+    const { data } = await api.get(`${ENDPOINT}/${id}`);
 
     return data;
   },
@@ -32,24 +23,25 @@ export const FormulaService = {
   /* ================= CREATE ================= */
 
   async create(data: {
+    carteira: string;
 
-    energia_kwh: number;
+    energia_consumida_kwh: number;
 
     possui_painel_solar: boolean;
 
     fator_credito: number;
 
+    creditos_gerados: number;
+
     valor_kwh: number;
+
+    valor_total: number;
 
     data_carregamento: string;
 
-  }): Promise<FormulaDTO> {
-
-    const { data: result } =
-      await api.post(
-        ENDPOINT,
-        data,
-      );
+    hash_transacao: string;
+  }): Promise<TransacaoCreditosDTO> {
+    const { data: result } = await api.post(ENDPOINT, data);
 
     return result;
   },
@@ -60,37 +52,33 @@ export const FormulaService = {
     id: string,
 
     data: {
+      carteira?: string;
 
-      energia_kwh?: number;
+      energia_consumida_kwh?: number;
 
       possui_painel_solar?: boolean;
 
       fator_credito?: number;
 
+      creditos_gerados?: number;
+
       valor_kwh?: number;
 
+      valor_total?: number;
+
       data_carregamento?: string;
+
+      hash_transacao?: string;
     },
-
-  ): Promise<FormulaDTO> {
-
-    const { data: result } =
-      await api.put(
-        `${ENDPOINT}/${id}`,
-        data,
-      );
+  ): Promise<TransacaoCreditosDTO> {
+    const { data: result } = await api.put(`${ENDPOINT}/${id}`, data);
 
     return result;
   },
 
   /* ================= DELETE ================= */
 
-  async remove(
-    id: string,
-  ): Promise<void> {
-
-    await api.delete(
-      `${ENDPOINT}/${id}`,
-    );
+  async remove(id: string): Promise<void> {
+    await api.delete(`${ENDPOINT}/${id}`);
   },
 };
